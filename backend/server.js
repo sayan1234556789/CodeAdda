@@ -5,6 +5,8 @@ import express from 'express'
 import connectDb from './config/db.js'
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import projectRoutes from './routes/projectRoutes.js'
+import applicationRoutes from './routes/applicationRoutes.js'
 
 
 const app = express()
@@ -15,6 +17,8 @@ app.use(express.json())
 
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
+app.use("/api/projects", projectRoutes)
+app.use("/api/applications", applicationRoutes)
 
 app.get("/" , (req, res) => {
     res.send("Api is running")
