@@ -22,7 +22,11 @@ router.get("/google/callback",
             {expiresIn: "7d"}
         )
 
-        res.redirect(`${process.env.CLIENT_URL}?token=${token}`)
+        res.cookie("token", token , {
+            httpOnly: true,
+            secure: false,
+        })
+        res.redirect(process.env.CLIENT_URL)
     }
 )
 

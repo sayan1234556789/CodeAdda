@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     },
     verificationToken: {
         type: String
+    },
+    avatar: {
+        type: String,
+        default: ""
     }
 }, {timeStamps : true})
 

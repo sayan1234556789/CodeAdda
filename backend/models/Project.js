@@ -27,5 +27,7 @@ const projectSchema = new mongoose.Schema ({
     }
 }, {timestamps: true})
 
+projectSchema.index({ title: "text", description: "text" })
+
 const Project = mongoose.model("Project", projectSchema)
 export default Project

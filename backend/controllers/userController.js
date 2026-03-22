@@ -13,13 +13,18 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(
-            req.user,
-            req.body,
-            {new: true}
-        )
+        const user = await User.findById(req.user)
 
-        res.json(updatedUser)
+        if(!user){
+            return res.status(404).json({
+                message: "user not found"
+            })
+        }
+
+        user.name = req.body.name || user.name
+        user.bio = req.body.bio || user.bio
+        user.skills = req.body.skills || user.skills
+        user.avatar = req.body.avatar || user.avatar
     } catch (error) {
         res.status(401).json({
             message: error.message

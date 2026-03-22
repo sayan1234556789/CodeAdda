@@ -24,10 +24,46 @@ export const createProject = async (req, res) => {
 
 export const getprojects = async (req, res) => {
     try {
-        const projects = await Project.find()
-        .populate("clientId", "name email")
+        const { search, skills, minBudget, maxBudget, page = 1, limit = 5 } = req.query
 
-        res.json(projects)
+        const query = {}
+
+        if(search){
+            query.$or = [
+                {title: { $regex: search, $options: "i" }},
+                {description: { $regex: search, $options: "i" }}
+            ];
+        }
+
+        if(skills){
+            query.skillsRequired = { $in: [skills] }
+        }
+
+        if(minBudget || maxBudget){
+            query.budget = {}
+            if(minBudget){
+                query.budget.$gte = Number(minBudget);
+                query.budget.$lte = Number(maxBudget);
+            }
+        }
+
+        const skip = (page - 1) * limit
+
+        const projects = await Project.find(query)
+            .populate("clientId", "name email")
+            .skip(skip)
+            .limit(Number(limit))
+            .sort({ createdAt: -1 })
+        
+        const totalCount = await Project.countDocuments(query)
+
+        res.json({
+            totalCount,
+            page: Number(page),
+            totalPages: Math.ceil(totalCount/limit),
+            projects
+        })
+
     } catch (error) {
         res.status(500).json({
             message: error.message
